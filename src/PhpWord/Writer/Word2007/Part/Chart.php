@@ -101,9 +101,57 @@ class Chart extends AbstractPart
      */
     private function writeChart(XMLWriter $xmlWriter)
     {
+        if (!is_null($this->element->getTitle())) {
+            $xmlWriter->writeElementBlock('c:date1904', 'val', 1);
+            $xmlWriter->writeElementBlock('c:lang', 'val', 'en-US');
+            $xmlWriter->writeElementBlock('c:roundedCorners', 'val', 1);
+            $xmlWriter->writeElementBlock('c:style', 'val', 2);
+        }
+
         $xmlWriter->startElement('c:chart');
 
-        $xmlWriter->writeElementBlock('c:autoTitleDeleted', 'val', 1);
+        if (!is_null($this->element->getTitle())) {
+            $attributes = [
+                "typeface" => "Open Sans",
+                "panose" => "020B0606030504020204",
+                "pitchFamily" => 34,
+                "charset" => 0
+            ];
+
+            $xmlWriter->startElement('c:title');
+                $xmlWriter->startElement('c:tx');
+                    $xmlWriter->startElement('c:rich');
+                        $xmlWriter->writeElement('a:bodyPr');
+                        $xmlWriter->writeElement('a:lstStyle');
+                        $xmlWriter->startElement('a:p');
+                            $xmlWriter->startElement('a:pPr');
+                                $xmlWriter->writeElement('a:defRPr');
+                            $xmlWriter->endElement(); // a:pPr
+                            $xmlWriter->startElement('a:r');
+                                $xmlWriter->startElement('a:rPr');
+                                $xmlWriter->writeAttribute('lang', 'en-AU');
+                                $xmlWriter->writeAttribute('sz', 1000);
+                                $xmlWriter->writeAttribute('b', 0);
+                                    $xmlWriter->startElement('a:solidFill');
+                                        $xmlWriter->writeElementBlock('a:srgbClr', 'val', '595959');
+                                    $xmlWriter->endElement();
+                                    $xmlWriter->writeElementBlock('a:latin', $attributes);
+                                    $xmlWriter->writeElementBlock('a:ea', $attributes);
+                                    $xmlWriter->writeElementBlock('a:cs', $attributes);
+                                $xmlWriter->endElement(); // a:rPr
+                                $xmlWriter->startElement('a:t');
+                                    $xmlWriter->writeRaw($this->element->getTitle());
+                                $xmlWriter->endElement(); // a:t
+                            $xmlWriter->endElement(); // a:r
+                        $xmlWriter->endElement(); // a:p
+                    $xmlWriter->endElement(); // c:rich
+                $xmlWriter->endElement(); // c:tx
+                $xmlWriter->writeElementBlock('c:overlay', 'val', 0);
+            $xmlWriter->endElement(); // c:title
+            $xmlWriter->writeElementBlock('c:autoTitleDeleted', 'val', 0);
+        } else {
+            $xmlWriter->writeElementBlock('c:autoTitleDeleted', 'val', 1);
+        }
 
         $this->writePlotArea($xmlWriter);
 
@@ -226,6 +274,31 @@ class Chart extends AbstractPart
      */
     private function writeSeriesItem(XMLWriter $xmlWriter, $type, $values)
     {
+        $elementColors = $this->element->getColors();
+        //based on http://stackoverflow.com/questions/24866280/pie-chart-colors-in-opendocument
+        if($elementColors !== null) {
+            $colorIndex = 0;
+            foreach ($elementColors as $color) {
+                $xmlWriter->startElement('c:dPt');
+
+                $xmlWriter->writeElementBlock('c:idx', 'val', $colorIndex);
+
+                $xmlWriter->startElement('c:spPr');
+
+                $xmlWriter->startElement('a:solidFill');
+
+                $xmlWriter->writeElementBlock('a:srgbClr', 'val', $color);
+
+                $xmlWriter->endElement(); // a:solidFill
+
+                $xmlWriter->endElement(); // c:spPr
+
+                $xmlWriter->endElement(); // c:dPt
+
+                $colorIndex++;
+            }
+        }
+
         $types = array(
             'cat' => array('c:cat', 'c:strLit'),
             'val' => array('c:val', 'c:numLit'),
@@ -249,6 +322,7 @@ class Chart extends AbstractPart
                 $xmlWriter->endElement();
             }
             $xmlWriter->endElement(); // c:pt
+
             $index++;
         }
 

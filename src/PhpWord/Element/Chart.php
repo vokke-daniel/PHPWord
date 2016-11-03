@@ -54,6 +54,10 @@ class Chart extends AbstractElement
      */
     private $style;
 
+    private $colors;
+
+    private $title;
+
     /**
      * Create new instance
      *
@@ -62,11 +66,21 @@ class Chart extends AbstractElement
      * @param array $values
      * @param array $style
      */
-    public function __construct($type, $categories, $values, $style = null)
+    public function __construct($type, $categories, $values, $style = null, $colors = null, $title = null)
     {
         $this->setType($type);
         $this->addSeries($categories, $values);
         $this->style = $this->setNewStyle(new ChartStyle(), $style, true);
+        $this->setColors($colors);
+        $this->setTitle($title);
+    }
+
+    public function getColors() {
+        return $this->colors;
+    }
+
+    public function setColors($value) {
+        $this->colors = $value;
     }
 
     /**
@@ -122,4 +136,20 @@ class Chart extends AbstractElement
     {
         return $this->style;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getTitle() {
+        return $this->title;
+    }
+
+    /**
+     * @param mixed $title
+     */
+    public function setTitle($title) {
+        $this->title = $title;
+    }
+
+
 }

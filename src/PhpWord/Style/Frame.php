@@ -164,6 +164,9 @@ class Frame extends AbstractStyle
      */
     private $vPosRelTo;
 
+    private $posVertical;
+    private $posVerticalRelative;
+
     /**
      * Wrap type
      *

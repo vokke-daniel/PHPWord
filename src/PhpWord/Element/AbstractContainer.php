@@ -206,7 +206,7 @@ abstract class AbstractContainer extends AbstractElement
             'TextRun'       => array('Section', 'Header', 'Footer', 'Cell', 'TextBox'),
             'ListItem'      => array('Section', 'Header', 'Footer', 'Cell', 'TextBox'),
             'ListItemRun'   => array('Section', 'Header', 'Footer', 'Cell', 'TextBox'),
-            'Table'         => array('Section', 'Header', 'Footer', 'Cell', 'TextBox'),
+            'Table'         => array('Section', 'Header', 'Footer', 'Cell', 'TextBox', 'TextRun'),
             'CheckBox'      => array('Section', 'Header', 'Footer', 'Cell'),
             'TextBox'       => array('Section', 'Header', 'Footer', 'Cell'),
             'Footnote'      => array('Section', 'TextRun', 'Cell'),
@@ -215,7 +215,7 @@ abstract class AbstractContainer extends AbstractElement
             'Title'         => array('Section'),
             'TOC'           => array('Section'),
             'PageBreak'     => array('Section'),
-            'Chart'         => array('Section'),
+            'Chart'         => array('Section', 'TextRun'),
         );
 
         // Special condition, e.g. preservetext can only exists in cell when

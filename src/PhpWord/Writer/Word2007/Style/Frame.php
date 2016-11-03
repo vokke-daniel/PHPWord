@@ -56,11 +56,17 @@ class Frame extends AbstractStyle
             'hPos'      => 'mso-position-horizontal',
             'vPos'      => 'mso-position-vertical',
             'hPosRelTo' => 'mso-position-horizontal-relative',
-            'vPosRelTo' => 'mso-position-vertical-relative',
+            'vPosRelTo' => 'mso-position-vertical-relative'
         );
         $posStyles = $this->getStyles($style, $properties);
 
         $styles = array_merge($sizeStyles, $posStyles);
+
+        if ($style->getWrap() === "tight") {
+            $styles["mso-wrap-distance-right"] = "2.85pt";
+            $styles["mso-position-vertical"] = "absolute";
+            $styles["mso-position-vertical-relative"] = "text";
+        }
 
        // zIndex for infront & behind wrap
         $wrap = $style->getWrap();
